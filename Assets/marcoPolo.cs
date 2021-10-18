@@ -5,9 +5,10 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using rnd = UnityEngine.Random;
 
-public class marcoPoloCruel : MonoBehaviour
+public class marcoPolo : MonoBehaviour
 {
     public new KMAudio audio;
+	public AudioSource beepPlayer;
     public KMBombInfo bomb;
 	public KMBombModule module;
 
@@ -51,16 +52,16 @@ public class marcoPoloCruel : MonoBehaviour
 			isBlue[i] = rnd.Range(0,2) == 0;
 			directionIndices[i] = rnd.Range(0,7);
 			labelOrders[i] = Enumerable.Range(0,7).ToList().Shuffle().ToArray();
-			Debug.LogFormat("[Marco Polo Cruel #{0}] Stage {1}:", moduleId, i + 1);
+			Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
 			if (isBlue[i])
 			{
 				solution[i] = Array.IndexOf(labelOrders[i], directionIndices[i]);
-				Debug.LogFormat("[Marco Polo Cruel #{0}] The text is blue, and the sound is coming from the {1}, so the correct button to press is the one with that label.", moduleId, directionNames[directionIndices[i]]);
+				Debug.LogFormat("[Marco Polo #{0}] The text is blue, and the sound is coming from the {1}, so the correct button to press is the one with that label.", moduleId, directionNames[directionIndices[i]]);
 			}
 			else
 			{
 				solution[i] = directionIndices[i];
-				Debug.LogFormat("[Marco Polo Cruel #{0}] The text is black, and the sound is coming from the {1}, so the correct button to press is the one in that position.", moduleId, directionNames[solution[i]]);
+				Debug.LogFormat("[Marco Polo #{0}] The text is black, and the sound is coming from the {1}, so the correct button to press is the one in that position.", moduleId, directionNames[solution[i]]);
 			}
 		}
 		StartCoroutine(UpdateButtons());
@@ -102,18 +103,56 @@ public class marcoPoloCruel : MonoBehaviour
 	{
 		cantPress = true;
 		soundButton.AddInteractionPunch(.5f);
+		if (beepPlayer.isPlaying)
+			beepPlayer.Stop();
         if (moduleSolved)
         {
             int rando = rnd.Range(0, 7);
-            audio.PlaySoundAtTransform("beep" + labels[rando], transform);
+			SetBeepPlayer(labels[rando]);
         }
         else
         {
-			audio.PlaySoundAtTransform("beep" + labels[directionIndices[stage]], transform);
-        }
+			SetBeepPlayer(labels[directionIndices[stage]]);
+		}
+		beepPlayer.Play();
 		yield return new WaitForSeconds(.75f);
 		cantPress = false;
 	}
+
+	void SetBeepPlayer(string pos)
+    {
+		switch (pos)
+        {
+			case "FL":
+				beepPlayer.panStereo = -.5f;
+				beepPlayer.volume = .5f;
+				break;
+			case "FM":
+				beepPlayer.panStereo = 0f;
+				beepPlayer.volume = .5f;
+				break;
+			case "ML":
+				beepPlayer.panStereo = -1f;
+				beepPlayer.volume = .5f;
+				break;
+			case "MR":
+				beepPlayer.panStereo = 1f;
+				beepPlayer.volume = .5f;
+				break;
+			case "BL":
+				beepPlayer.panStereo = -.5f;
+				beepPlayer.volume = .25f;
+				break;
+			case "BM":
+				beepPlayer.panStereo = 0f;
+				beepPlayer.volume = .25f;
+				break;
+			case "BR":
+				beepPlayer.panStereo = .5f;
+				beepPlayer.volume = .25f;
+				break;
+		}
+    }
 
 	void PressButton(KMSelectable button)
 	{
@@ -125,7 +164,7 @@ public class marcoPoloCruel : MonoBehaviour
 		if (solution[stage] != ix)
 		{
 			module.HandleStrike();
-			Debug.LogFormat("[Marco Polo Cruel #{0}] You pressed the button in the {1} position. That is incorrect. Strike!", moduleId, directionNames[ix]);
+			Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is incorrect. Strike!", moduleId, directionNames[ix]);
 			StartCoroutine(FlashLeds());
 			perfect = false;
 		}
@@ -133,7 +172,7 @@ public class marcoPoloCruel : MonoBehaviour
 		{
 			leds[stage].material.color = on;
 			stage++;
-			Debug.LogFormat("[Marco Polo Cruel #{0}] You pressed the button in the {1} position. That is correct.", moduleId, directionNames[ix]);
+			Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is correct.", moduleId, directionNames[ix]);
 			if (stage != 3)
 				StartCoroutine(UpdateButtons());
 			else
@@ -141,7 +180,7 @@ public class marcoPoloCruel : MonoBehaviour
 				moduleSolved = true;
                 cantPress = true;
 				StartCoroutine(Solve());
-				Debug.LogFormat("[Marco Polo Cruel #{0}] Module solved.", moduleId);
+				Debug.LogFormat("[Marco Polo #{0}] Module solved.", moduleId);
 			}
 		}
 	}

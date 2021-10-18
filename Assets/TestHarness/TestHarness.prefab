@@ -20159,13 +20159,7 @@ MonoBehaviour:
   HighlightPrefab: {fileID: 100000, guid: d78a484c6e87f1b47b6596ac080fe942, type: 2}
   AudioVolume: 0.25
   AudioClips:
-  - {fileID: 8300000, guid: 1b6cece9f3056524cbe1100010ed0f96, type: 3}
-  - {fileID: 8300000, guid: 916aed1d7c219b04486ed33c15f3f7f5, type: 3}
-  - {fileID: 8300000, guid: e5e5ce5febee97846a723b1d12bc17a0, type: 3}
-  - {fileID: 8300000, guid: 22e9b6c30dd045248afae5d794b35f57, type: 3}
-  - {fileID: 8300000, guid: d8ad8f1ef54c87943878530e8b621aba, type: 3}
-  - {fileID: 8300000, guid: a335b3896f5823b4b90fc770d52272cd, type: 3}
-  - {fileID: 8300000, guid: daa085637a1dbff43b54e7f6746d0488, type: 3}
+  - {fileID: 8300000, guid: b145b08fdb9127a4c97014bbf2d74da1, type: 3}
   - {fileID: 8300000, guid: bd5c39a13afe6ae43827d7ebbe393160, type: 3}
   StrikeCount: 3
   TimeLimit: 600

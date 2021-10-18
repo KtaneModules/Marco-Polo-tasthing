@@ -372,6 +372,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1394288008252672
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4229957536852480}
+  - component: {fileID: 82164630628132046}
+  m_Layer: 0
+  m_Name: BeepPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1425458169926932
 GameObject:
   m_ObjectHideFlags: 1
@@ -707,7 +723,7 @@ GameObject:
   - component: {fileID: 114712797181976816}
   - component: {fileID: 114560890383736538}
   m_Layer: 0
-  m_Name: marcoPoloCruel
+  m_Name: marcoPolo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -852,6 +868,19 @@ Transform:
   m_Father: {fileID: 4366608319632702}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4229957536852480
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1394288008252672}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4348147837179018}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4267589317088602
 Transform:
   m_ObjectHideFlags: 1
@@ -893,6 +922,7 @@ Transform:
   - {fileID: 4224362467092236}
   - {fileID: 4056548122236682}
   - {fileID: 4918448580739182}
+  - {fileID: 4229957536852480}
   m_Father: {fileID: 4742697982017958}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2369,6 +2399,86 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1318033625049248}
   m_Mesh: {fileID: 4300098, guid: bfb76e525a26a5a4cb49666c7748c1f7, type: 3}
+--- !u!82 &82164630628132046
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1394288008252672}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b145b08fdb9127a4c97014bbf2d74da1, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: -0.5
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!102 &102088097437265822
 TextMesh:
   serializedVersion: 3
@@ -2634,8 +2744,8 @@ MonoBehaviour:
   m_Script: {fileID: -119419473, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ModuleType: marcoPoloCruel
-  ModuleDisplayName: Marco Polo Cruel
+  ModuleType: marcoPolo
+  ModuleDisplayName: Marco Polo
   RequiresTimerVisibility: 0
 --- !u!114 &114233194948395776
 MonoBehaviour:
@@ -2880,10 +2990,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1954350148131442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd44fe0183e77eb4c970a308514cfc7f, type: 3}
+  m_Script: {fileID: 11500000, guid: 905b8a03c397d524d8d6726910629323, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   audio: {fileID: 114362555509535318}
+  beepPlayer: {fileID: 82164630628132046}
   bomb: {fileID: 114212602564178874}
   module: {fileID: 114221075226099596}
   buttons:
