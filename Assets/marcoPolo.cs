@@ -8,237 +8,237 @@ using rnd = UnityEngine.Random;
 public class marcoPolo : MonoBehaviour
 {
     public new KMAudio audio;
-	public AudioSource beepPlayer;
+    public AudioSource beepPlayer;
     public KMBombInfo bomb;
-	public KMBombModule module;
+    public KMBombModule module;
 
-	public KMSelectable[] buttons;
-	public KMSelectable soundButton;
-	public TextMesh[] buttonTexts;
-	public Renderer[] leds;
-	public Color[] textColors;
-	public Color on;
-	public Color off;
-	public Color solvedColor;
-	public Color strikeColor;
+    public KMSelectable[] buttons;
+    public KMSelectable soundButton;
+    public TextMesh[] buttonTexts;
+    public Renderer[] leds;
+    public Color[] textColors;
+    public Color on;
+    public Color off;
+    public Color solvedColor;
+    public Color strikeColor;
 
-	private int stage;
-	private bool[] isBlue = new bool[3];
-	private int[] directionIndices = new int[3];
-	private int[] solution = new int[3];
-	private int[][] labelOrders = new int[3][];
+    private int stage;
+    private bool[] isBlue = new bool[3];
+    private int[] directionIndices = new int[3];
+    private int[] solution = new int[3];
+    private int[][] labelOrders = new int[3][];
 
-	private bool cantPress;
-	private bool perfect = true;
-	private static readonly string[] labels = new string[7] { "FL", "FM", "MR", "BR", "BM", "BL", "ML" };
-	private static readonly string[] directionNames = new string[7] { "front-left", "front-middle", "middle-right", "back-right", "back-middle", "back-left", "middle-left" };
+    private bool cantPress;
+    private bool perfect = true;
+    private static readonly string[] labels = new string[7] { "FL", "FM", "MR", "BR", "BM", "BL", "ML" };
+    private static readonly string[] directionNames = new string[7] { "front-left", "front-middle", "middle-right", "back-right", "back-middle", "back-left", "middle-left" };
 
     private static int moduleIdCounter = 1;
     private int moduleId;
     private bool moduleSolved;
 
-    void Awake()
+    private void Awake()
     {
-    	moduleId = moduleIdCounter++;
-		foreach (KMSelectable button in buttons)
-			button.OnInteract += delegate () { PressButton(button); return false; };
-		soundButton.OnInteract += delegate () { StartCoroutine(PressSoundButton()); return false; };
+        moduleId = moduleIdCounter++;
+        foreach (KMSelectable button in buttons)
+            button.OnInteract += delegate () { PressButton(button); return false; };
+        soundButton.OnInteract += delegate () { StartCoroutine(PressSoundButton()); return false; };
     }
 
-    void Start()
+    private void Start()
     {
-		for (int i = 0; i < 3; i++)
-		{
-			isBlue[i] = rnd.Range(0,2) == 0;
-			directionIndices[i] = rnd.Range(0,7);
-			labelOrders[i] = Enumerable.Range(0,7).ToList().Shuffle().ToArray();
-			Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
-			if (isBlue[i])
-			{
-				solution[i] = Array.IndexOf(labelOrders[i], directionIndices[i]);
-				Debug.LogFormat("[Marco Polo #{0}] The text is blue, and the sound is coming from the {1}, so the correct button to press is the one with that label.", moduleId, directionNames[directionIndices[i]]);
-			}
-			else
-			{
-				solution[i] = directionIndices[i];
-				Debug.LogFormat("[Marco Polo #{0}] The text is black, and the sound is coming from the {1}, so the correct button to press is the one in that position.", moduleId, directionNames[solution[i]]);
-			}
-		}
-		StartCoroutine(UpdateButtons());
-    }
-
-	IEnumerator UpdateButtons()
-	{
-		cantPress = true;
-		if (stage != 0)
-		{
-			for (int i = 0; i < 7; i++)
-			{
-				yield return new WaitForSeconds(.3f);
-				audio.PlaySoundAtTransform("tap", buttons[i].transform);
-				buttonTexts[i].text = "";
-			}
-			yield return new WaitForSeconds(.4f);
-			for (int i = 0; i < 7; i++)
-			{
-				if (i != 0)
-					yield return new WaitForSeconds(.3f);
-				audio.PlaySoundAtTransform("tap", buttons[i].transform);
-				buttonTexts[i].text = labels[labelOrders[stage][i]];
-				buttonTexts[i].color = !isBlue[stage] ? textColors[0] : textColors[1];
-			}
-		}
-		else
-		{
-			for (int i = 0; i < 7; i++)
-			{
-				buttonTexts[i].text = labels[labelOrders[stage][i]];
-				buttonTexts[i].color = !isBlue[stage] ? textColors[0] : textColors[1];
-			}
-		}
-		cantPress = false;
-	}
-
-	IEnumerator PressSoundButton()
-	{
-		cantPress = true;
-		soundButton.AddInteractionPunch(.5f);
-		if (beepPlayer.isPlaying)
-			beepPlayer.Stop();
-        if (moduleSolved)
+        for (int i = 0; i < 3; i++)
         {
-            int rando = rnd.Range(0, 7);
-			SetBeepPlayer(labels[rando]);
+            isBlue[i] = rnd.Range(0, 2) == 0;
+            directionIndices[i] = rnd.Range(0, 7);
+            labelOrders[i] = Enumerable.Range(0, 7).ToList().Shuffle().ToArray();
+            Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
+            if (isBlue[i])
+            {
+                solution[i] = Array.IndexOf(labelOrders[i], directionIndices[i]);
+                Debug.LogFormat("[Marco Polo #{0}] The text is blue, and the sound is coming from the {1}, so the correct button to press is the one with that label.", moduleId, directionNames[directionIndices[i]]);
+            }
+            else
+            {
+                solution[i] = directionIndices[i];
+                Debug.LogFormat("[Marco Polo #{0}] The text is black, and the sound is coming from the {1}, so the correct button to press is the one in that position.", moduleId, directionNames[solution[i]]);
+            }
+        }
+        StartCoroutine(UpdateButtons());
+    }
+
+    private IEnumerator UpdateButtons()
+    {
+        cantPress = true;
+        if (stage != 0)
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                yield return new WaitForSeconds(.3f);
+                audio.PlaySoundAtTransform("tap", buttons[i].transform);
+                buttonTexts[i].text = "";
+            }
+            yield return new WaitForSeconds(.4f);
+            for (int i = 0; i < 7; i++)
+            {
+                if (i != 0)
+                    yield return new WaitForSeconds(.3f);
+                audio.PlaySoundAtTransform("tap", buttons[i].transform);
+                buttonTexts[i].text = labels[labelOrders[stage][i]];
+                buttonTexts[i].color = !isBlue[stage] ? textColors[0] : textColors[1];
+            }
         }
         else
         {
-			SetBeepPlayer(labels[directionIndices[stage]]);
-		}
-		beepPlayer.Play();
-		yield return new WaitForSeconds(.75f);
-		cantPress = false;
-	}
-
-	void SetBeepPlayer(string pos)
-    {
-		switch (pos)
-        {
-			case "FL":
-				beepPlayer.panStereo = -.5f;
-				beepPlayer.volume = .5f;
-				break;
-			case "FM":
-				beepPlayer.panStereo = 0f;
-				beepPlayer.volume = .5f;
-				break;
-			case "ML":
-				beepPlayer.panStereo = -1f;
-				beepPlayer.volume = .5f;
-				break;
-			case "MR":
-				beepPlayer.panStereo = 1f;
-				beepPlayer.volume = .5f;
-				break;
-			case "BL":
-				beepPlayer.panStereo = -.5f;
-				beepPlayer.volume = .25f;
-				break;
-			case "BM":
-				beepPlayer.panStereo = 0f;
-				beepPlayer.volume = .25f;
-				break;
-			case "BR":
-				beepPlayer.panStereo = .5f;
-				beepPlayer.volume = .25f;
-				break;
-		}
+            for (int i = 0; i < 7; i++)
+            {
+                buttonTexts[i].text = labels[labelOrders[stage][i]];
+                buttonTexts[i].color = !isBlue[stage] ? textColors[0] : textColors[1];
+            }
+        }
+        cantPress = false;
     }
 
-	void PressButton(KMSelectable button)
-	{
-		button.AddInteractionPunch(.5f);
-		audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, button.transform);
-		if (moduleSolved || cantPress)
-			return;
-		var ix = Array.IndexOf(buttons, button);
-		if (solution[stage] != ix)
-		{
-			module.HandleStrike();
-			Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is incorrect. Strike!", moduleId, directionNames[ix]);
-			StartCoroutine(FlashLeds());
-			perfect = false;
-		}
-		else
-		{
-			leds[stage].material.color = on;
-			stage++;
-			Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is correct.", moduleId, directionNames[ix]);
-			if (stage != 3)
-				StartCoroutine(UpdateButtons());
-			else
-			{
-				moduleSolved = true;
+    private IEnumerator PressSoundButton()
+    {
+        cantPress = true;
+        soundButton.AddInteractionPunch(.5f);
+        if (beepPlayer.isPlaying)
+            beepPlayer.Stop();
+        if (moduleSolved)
+        {
+            int rando = rnd.Range(0, 7);
+            SetBeepPlayer(labels[rando]);
+        }
+        else
+        {
+            SetBeepPlayer(labels[directionIndices[stage]]);
+        }
+        beepPlayer.Play();
+        yield return new WaitForSeconds(.75f);
+        cantPress = false;
+    }
+
+    private void SetBeepPlayer(string pos)
+    {
+        switch (pos)
+        {
+            case "FL":
+                beepPlayer.panStereo = -.5f;
+                beepPlayer.volume = .5f;
+                break;
+            case "FM":
+                beepPlayer.panStereo = 0f;
+                beepPlayer.volume = .5f;
+                break;
+            case "ML":
+                beepPlayer.panStereo = -1f;
+                beepPlayer.volume = .5f;
+                break;
+            case "MR":
+                beepPlayer.panStereo = 1f;
+                beepPlayer.volume = .5f;
+                break;
+            case "BL":
+                beepPlayer.panStereo = -.5f;
+                beepPlayer.volume = .25f;
+                break;
+            case "BM":
+                beepPlayer.panStereo = 0f;
+                beepPlayer.volume = .25f;
+                break;
+            case "BR":
+                beepPlayer.panStereo = .5f;
+                beepPlayer.volume = .25f;
+                break;
+        }
+    }
+
+    private void PressButton(KMSelectable button)
+    {
+        button.AddInteractionPunch(.5f);
+        audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, button.transform);
+        if (moduleSolved || cantPress)
+            return;
+        var ix = Array.IndexOf(buttons, button);
+        if (solution[stage] != ix)
+        {
+            module.HandleStrike();
+            Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is incorrect. Strike!", moduleId, directionNames[ix]);
+            StartCoroutine(FlashLeds());
+            perfect = false;
+        }
+        else
+        {
+            leds[stage].material.color = on;
+            stage++;
+            Debug.LogFormat("[Marco Polo #{0}] You pressed the button in the {1} position. That is correct.", moduleId, directionNames[ix]);
+            if (stage != 3)
+                StartCoroutine(UpdateButtons());
+            else
+            {
+                moduleSolved = true;
                 cantPress = true;
-				StartCoroutine(Solve());
-				Debug.LogFormat("[Marco Polo #{0}] Module solved.", moduleId);
-			}
-		}
-	}
+                StartCoroutine(Solve());
+                Debug.LogFormat("[Marco Polo #{0}] Module solved.", moduleId);
+            }
+        }
+    }
 
-	IEnumerator Solve()
-	{
-		string[] solvedMessage = perfect ? new string[7] { "P", "E", "R", "F", "E", "C", "T" } : new string[7] { "N", "I", "C", "E", "O", "N", "E" };
-		int[] order = new int[7] { 0, 1, 6, 2, 5, 4, 3 };
-		for (int i = 0; i < 7; i++)
-		{
-			yield return new WaitForSeconds(.3f);
-			buttonTexts[i].text = "";
-			audio.PlaySoundAtTransform("tap", buttons[i].transform);
-			buttonTexts[i].color = perfect ? solvedColor : textColors[0];
-		}
-		yield return new WaitForSeconds(.4f);
-		for (int i = 0; i < 7; i++)
-		{
-			if (i != 0)
-				yield return new WaitForSeconds(.3f);
-			buttonTexts[order[i]].text = solvedMessage[i];
-			audio.PlaySoundAtTransform("tap", buttons[order[i]].transform);
-		}
-		StartCoroutine(FlashLeds());
-		module.HandlePass();
-		audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
-	}
+    private IEnumerator Solve()
+    {
+        string[] solvedMessage = perfect ? new string[7] { "P", "E", "R", "F", "E", "C", "T" } : new string[7] { "N", "I", "C", "E", "O", "N", "E" };
+        int[] order = new int[7] { 0, 1, 6, 2, 5, 4, 3 };
+        for (int i = 0; i < 7; i++)
+        {
+            yield return new WaitForSeconds(.3f);
+            buttonTexts[i].text = "";
+            audio.PlaySoundAtTransform("tap", buttons[i].transform);
+            buttonTexts[i].color = perfect ? solvedColor : textColors[0];
+        }
+        yield return new WaitForSeconds(.4f);
+        for (int i = 0; i < 7; i++)
+        {
+            if (i != 0)
+                yield return new WaitForSeconds(.3f);
+            buttonTexts[order[i]].text = solvedMessage[i];
+            audio.PlaySoundAtTransform("tap", buttons[order[i]].transform);
+        }
+        StartCoroutine(FlashLeds());
+        module.HandlePass();
+        audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
+    }
 
-	IEnumerator FlashLeds()
-	{
-		cantPress = true;
-		for (int i = 0; i < 3; i++)
-		{
-			if (i != 0)
-				yield return new WaitForSeconds(.2f);
-			foreach (Renderer led in leds)
-				led.material.color = off;
-			yield return new WaitForSeconds(.2f);
-			foreach (Renderer led in leds)
-				led.material.color = moduleSolved ? on : strikeColor;
-		}
-		if (!moduleSolved)
-		{
-			for (int i = 0; i < 3; i++)
-				if (i < stage)
-					leds[i].material.color = on;
-				else
-					leds[i].material.color = off;
-		}
-		cantPress = false;
-	}
+    private IEnumerator FlashLeds()
+    {
+        cantPress = true;
+        for (int i = 0; i < 3; i++)
+        {
+            if (i != 0)
+                yield return new WaitForSeconds(.2f);
+            foreach (Renderer led in leds)
+                led.material.color = off;
+            yield return new WaitForSeconds(.2f);
+            foreach (Renderer led in leds)
+                led.material.color = moduleSolved ? on : strikeColor;
+        }
+        if (!moduleSolved)
+        {
+            for (int i = 0; i < 3; i++)
+                if (i < stage)
+                    leds[i].material.color = on;
+                else
+                    leds[i].material.color = off;
+        }
+        cantPress = false;
+    }
 
     //twitch plays
-    #pragma warning disable 414
+#pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} press <pos> (#) [Presses the button in the specified position (center button only: optionally press '#' times with delays inbetween each press)] | Valid positions are TL, TM, MR, BR, BM, BL, ML, and C (Center)";
-    #pragma warning restore 414
+#pragma warning restore 414
 
-    IEnumerator ProcessTwitchCommand(string command)
+    private IEnumerator ProcessTwitchCommand(string command)
     {
         string[] parameters = command.Split(' ');
         if (Regex.IsMatch(parameters[0], @"^\s*press\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
@@ -343,7 +343,7 @@ public class marcoPolo : MonoBehaviour
         }
     }
 
-    IEnumerator TwitchHandleForcedSolve()
+    private IEnumerator TwitchHandleForcedSolve()
     {
         while (cantPress) { yield return true; }
         for (int i = stage; i < 3; i++)
