@@ -51,9 +51,6 @@ public class marcoPolo : MonoBehaviour
         {
             isBlue[i] = rnd.Range(0, 2) == 0;
             directionIndices[i] = rnd.Range(0, 7);
-            directionIndices[0] = 5;
-            directionIndices[1] = 4;
-            directionIndices[2] = 3;
             labelOrders[i] = Enumerable.Range(0, 7).ToList().Shuffle().ToArray();
             Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
             if (isBlue[i])

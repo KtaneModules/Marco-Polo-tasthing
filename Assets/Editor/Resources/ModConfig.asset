@@ -18,6 +18,6 @@ MonoBehaviour:
 
 
     Module idea and implementation by TasThing.'
-  version: 1.0
+  version: 1.0.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b555050219247eb4ea657a2f543f6ead, type: 3}
