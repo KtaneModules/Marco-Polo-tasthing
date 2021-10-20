@@ -14,10 +14,10 @@ MonoBehaviour:
   id: marcoPolo
   title: Marco Polo
   author: TasThing
-  description: 'Wait, which way is up?
+  description: 'Yeah, I pretty much never sit by the pool anymore.
 
 
     Module idea and implementation by TasThing.'
-  version: 1
+  version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b555050219247eb4ea657a2f543f6ead, type: 3}

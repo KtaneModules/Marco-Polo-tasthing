@@ -51,6 +51,9 @@ public class marcoPolo : MonoBehaviour
         {
             isBlue[i] = rnd.Range(0, 2) == 0;
             directionIndices[i] = rnd.Range(0, 7);
+            directionIndices[0] = 5;
+            directionIndices[1] = 4;
+            directionIndices[2] = 3;
             labelOrders[i] = Enumerable.Range(0, 7).ToList().Shuffle().ToArray();
             Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
             if (isBlue[i])
@@ -106,14 +109,9 @@ public class marcoPolo : MonoBehaviour
         if (beepPlayer.isPlaying)
             beepPlayer.Stop();
         if (moduleSolved)
-        {
-            int rando = rnd.Range(0, 7);
-            SetBeepPlayer(labels[rando]);
-        }
+            SetBeepPlayer(labels[rnd.Range(0, 7)]);
         else
-        {
             SetBeepPlayer(labels[directionIndices[stage]]);
-        }
         beepPlayer.Play();
         yield return new WaitForSeconds(.75f);
         cantPress = false;
