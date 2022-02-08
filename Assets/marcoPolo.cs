@@ -101,8 +101,10 @@ public class marcoPolo : MonoBehaviour
 
     private IEnumerator PressSoundButton()
     {
-        cantPress = true;
         soundButton.AddInteractionPunch(.5f);
+        if (cantPress)
+            yield break;
+        cantPress = true;
         if (beepPlayer.isPlaying)
             beepPlayer.Stop();
         if (moduleSolved)
