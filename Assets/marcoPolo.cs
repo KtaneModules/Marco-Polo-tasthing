@@ -30,8 +30,8 @@ public class marcoPolo : MonoBehaviour
 
     private bool cantPress;
     private bool perfect = true;
-    private static readonly string[] labels = new string[7] { "FL", "FM", "MR", "BR", "BM", "BL", "ML" };
-    private static readonly string[] directionNames = new string[7] { "front-left", "front-middle", "middle-right", "back-right", "back-middle", "back-left", "middle-left" };
+    private static readonly string[] labels = new[] { "L", "M", "R" };
+    private static readonly string[] directionNames = new[] { "left", "middle", "right" };
 
     private static int moduleIdCounter = 1;
     private int moduleId;
@@ -50,8 +50,8 @@ public class marcoPolo : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             isBlue[i] = rnd.Range(0, 2) == 0;
-            directionIndices[i] = rnd.Range(0, 7);
-            labelOrders[i] = Enumerable.Range(0, 7).ToList().Shuffle().ToArray();
+            directionIndices[i] = rnd.Range(0, 3);
+            labelOrders[i] = Enumerable.Range(0, 3).ToList().Shuffle().ToArray();
             Debug.LogFormat("[Marco Polo #{0}] Stage {1}:", moduleId, i + 1);
             if (isBlue[i])
             {
@@ -72,14 +72,14 @@ public class marcoPolo : MonoBehaviour
         cantPress = true;
         if (stage != 0)
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 3; i++)
             {
                 yield return new WaitForSeconds(.3f);
                 audio.PlaySoundAtTransform("tap", buttons[i].transform);
                 buttonTexts[i].text = "";
             }
             yield return new WaitForSeconds(.4f);
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 3; i++)
             {
                 if (i != 0)
                     yield return new WaitForSeconds(.3f);
@@ -90,7 +90,7 @@ public class marcoPolo : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 3; i++)
             {
                 buttonTexts[i].text = labels[labelOrders[stage][i]];
                 buttonTexts[i].color = !isBlue[stage] ? textColors[0] : textColors[1];
@@ -108,11 +108,11 @@ public class marcoPolo : MonoBehaviour
         if (beepPlayer.isPlaying)
             beepPlayer.Stop();
         if (moduleSolved)
-            SetBeepPlayer(labels[rnd.Range(0, 7)]);
+            SetBeepPlayer(labels[rnd.Range(0, 3)]);
         else
             SetBeepPlayer(labels[directionIndices[stage]]);
         beepPlayer.Play();
-        yield return new WaitForSeconds(.75f);
+        yield return new WaitForSeconds(.3f);
         cantPress = false;
     }
 
@@ -120,33 +120,14 @@ public class marcoPolo : MonoBehaviour
     {
         switch (pos)
         {
-            case "FL":
-                beepPlayer.panStereo = -.5f;
-                beepPlayer.volume = .5f;
-                break;
-            case "FM":
-                beepPlayer.panStereo = 0f;
-                beepPlayer.volume = .5f;
-                break;
-            case "ML":
+            case "L":
                 beepPlayer.panStereo = -1f;
-                beepPlayer.volume = .5f;
                 break;
-            case "MR":
-                beepPlayer.panStereo = 1f;
-                beepPlayer.volume = .5f;
-                break;
-            case "BL":
-                beepPlayer.panStereo = -.5f;
-                beepPlayer.volume = .25f;
-                break;
-            case "BM":
+            case "M":
                 beepPlayer.panStereo = 0f;
-                beepPlayer.volume = .25f;
                 break;
-            case "BR":
-                beepPlayer.panStereo = .5f;
-                beepPlayer.volume = .25f;
+            case "R":
+                beepPlayer.panStereo = 1f;
                 break;
         }
     }
@@ -184,9 +165,8 @@ public class marcoPolo : MonoBehaviour
 
     private IEnumerator Solve()
     {
-        string[] solvedMessage = perfect ? new string[7] { "P", "E", "R", "F", "E", "C", "T" } : new string[7] { "N", "I", "C", "E", "O", "N", "E" };
-        int[] order = new int[7] { 0, 1, 6, 2, 5, 4, 3 };
-        for (int i = 0; i < 7; i++)
+        string[] solvedMessage = perfect ? new[] { "G", "G", "!" } : new[] { "O", "K", "." };
+        for (int i = 0; i < 3; i++)
         {
             yield return new WaitForSeconds(.3f);
             buttonTexts[i].text = "";
@@ -194,12 +174,12 @@ public class marcoPolo : MonoBehaviour
             buttonTexts[i].color = perfect ? solvedColor : textColors[0];
         }
         yield return new WaitForSeconds(.4f);
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 3; i++)
         {
             if (i != 0)
                 yield return new WaitForSeconds(.3f);
-            buttonTexts[order[i]].text = solvedMessage[i];
-            audio.PlaySoundAtTransform("tap", buttons[order[i]].transform);
+            buttonTexts[i].text = solvedMessage[i];
+            audio.PlaySoundAtTransform("tap", buttons[i].transform);
         }
         StartCoroutine(FlashLeds());
         module.HandlePass();
@@ -232,7 +212,7 @@ public class marcoPolo : MonoBehaviour
 
     //twitch plays
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} press <pos> (#) [Presses the button in the specified position (center button only: optionally press '#' times with delays inbetween each press)] | Valid positions are TL, TM, MR, BR, BM, BL, ML, and C (Center)";
+    private readonly string TwitchHelpMessage = @"!{0} press <pos> (#) [Presses the button in the specified position (green button only: optionally press '#' times with delays inbetween each press)] | Valid positions are L M, R, and G (Green)";
 #pragma warning restore 414
 
     private IEnumerator ProcessTwitchCommand(string command)
@@ -243,7 +223,7 @@ public class marcoPolo : MonoBehaviour
             yield return null;
             if (parameters.Length == 3)
             {
-                string[] valids3s = { "center", "c" };
+                string[] valids3s = { "green", "g", "sound", "s" };
                 parameters[1] = parameters[1].ToLower();
                 if (valids3s.Contains(parameters[1]))
                 {
@@ -260,25 +240,25 @@ public class marcoPolo : MonoBehaviour
                         while (counter < temp)
                         {
                             counter++;
-                            yield return "trycancel Halting pressing the center button '" + parameters[2] + "' times due to a request to cancel.";
+                            yield return "trycancel Halting pressing the green button '" + parameters[2] + "' times due to a request to cancel.";
                             soundButton.OnInteract();
                             yield return new WaitForSeconds(1f);
                         }
                     }
                     else
                     {
-                        yield return "sendtochaterror The specified number of times to press the center button '" + parameters[2] + "' is invalid!";
+                        yield return "sendtochaterror The specified number of times to press the green button '" + parameters[2] + "' is invalid!";
                     }
                 }
                 else
                 {
-                    yield return "sendtochaterror Only the center button can be pressed a certain number of times!";
+                    yield return "sendtochaterror Only the green button can be pressed a certain number of times!";
                 }
             }
             else if (parameters.Length == 2)
             {
-                string[] valids = { "top-left", "topleft", "tl", "top-middle", "topmiddle", "tm", "mid-right", "midright", "middle-right", "middleright", "mr", "bottom-right", "bottomright", "br", "bottom-middle", "bottommiddle", "bm", "bottom-left", "bottomleft", "bl", "mid-left", "midleft", "middle-left", "middleleft", "ml", "center", "c" };
-                parameters[1] = parameters[1].ToLower();
+                string[] valids = { "green", "g", "sound", "s", "left", "l", "right", "r", "middle", "m", "center", "c" };
+                parameters[1] = parameters[1].ToLowerInvariant();
                 if (valids.Contains(parameters[1]))
                 {
                     if (cantPress)
@@ -286,56 +266,24 @@ public class marcoPolo : MonoBehaviour
                         yield return "sendtochaterror Buttons cannot be pressed while the module is animating!";
                         yield break;
                     }
-                    if (parameters[1].Equals("top-left") || parameters[1].Equals("topleft") || parameters[1].Equals("tl"))
-                    {
+                    if (parameters[1].Equals("left") || parameters[1].Equals("l"))
                         buttons[0].OnInteract();
-                    }
-                    else if (parameters[1].Equals("top-middle") || parameters[1].Equals("topmiddle") || parameters[1].Equals("tm"))
-                    {
+                    else if (parameters[1].Equals("middle") || parameters[1].Equals("m") || parameters[1].Equals("center") || parameters[1].Equals("c"))
                         buttons[1].OnInteract();
-                    }
-                    else if (parameters[1].Equals("mid-right") || parameters[1].Equals("midright") || parameters[1].Equals("middle-right") || parameters[1].Equals("middleright") || parameters[1].Equals("mr"))
-                    {
+                    else if (parameters[1].Equals("right") || parameters[1].Equals("r"))
                         buttons[2].OnInteract();
-                    }
-                    else if (parameters[1].Equals("bottom-right") || parameters[1].Equals("bottomright") || parameters[1].Equals("br"))
-                    {
-                        buttons[3].OnInteract();
-                    }
-                    else if (parameters[1].Equals("bottom-middle") || parameters[1].Equals("bottommiddle") || parameters[1].Equals("bm"))
-                    {
-                        buttons[4].OnInteract();
-                    }
-                    else if (parameters[1].Equals("bottom-left") || parameters[1].Equals("bottomleft") || parameters[1].Equals("bl"))
-                    {
-                        buttons[5].OnInteract();
-                    }
-                    else if (parameters[1].Equals("mid-left") || parameters[1].Equals("midleft") || parameters[1].Equals("middle-left") || parameters[1].Equals("middleleft") || parameters[1].Equals("ml"))
-                    {
-                        buttons[6].OnInteract();
-                    }
-                    else if (parameters[1].Equals("center") || parameters[1].Equals("c"))
-                    {
+                    else if (parameters[1].Equals("green") || parameters[1].Equals("g") || parameters[1].Equals("sound") || parameters[1].Equals("s"))
                         soundButton.OnInteract();
-                    }
                     if (stage == 3)
-                    {
                         yield return "solve";
-                    }
                 }
                 else
-                {
                     yield return "sendtochaterror The specified position '" + parameters[1] + "' is invalid!";
-                }
             }
             else if (parameters.Length == 1)
-            {
                 yield return "sendtochaterror Please specify which button to press!";
-            }
             else if (parameters.Length > 3)
-            {
                 yield return "sendtochaterror Too many parameters!";
-            }
             yield break;
         }
     }

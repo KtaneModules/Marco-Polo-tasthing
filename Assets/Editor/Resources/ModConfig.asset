@@ -14,10 +14,9 @@ MonoBehaviour:
   id: marcoPolo
   title: Marco Polo
   author: TasThing
-  description: 'Yeah, I pretty much never sit by the pool anymore.
-
-
-    Module idea and implementation by TasThing.'
-  version: 1.0.2
+  description: "Yeah, I pretty much never sit by the pool anymore.\r\n\r\nModule idea
+    and implementation by TasThing.\r\n\r\n[url=https://ktane.timwi.de/HTML/Marco%20Polo.html]Manual
+    HTML[/url]\r\n[url=https://ktane.timwi.de/PDF/Marco%20Polo.pdf]Manual PDF[/url]"
+  version: 2.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b555050219247eb4ea657a2f543f6ead, type: 3}
